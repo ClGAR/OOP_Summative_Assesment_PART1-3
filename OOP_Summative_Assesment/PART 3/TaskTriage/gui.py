@@ -1,3 +1,5 @@
+import os
+import sys
 import tkinter as tk
 from tkinter import ttk, messagebox, simpledialog
 
@@ -936,6 +938,34 @@ class TaskTriageGUI:
         )
 
 
-root = tk.Tk()
-app = TaskTriageGUI(root)
-root.mainloop()
+def main():
+    if sys.platform.startswith("linux") and not (
+        os.environ.get("DISPLAY")
+        or os.environ.get("WAYLAND_DISPLAY")
+    ):
+        print(
+            "TaskTriage GUI requires a graphical display, but none is available."
+        )
+        print(
+            "In Codespaces, run this program with: xvfb-run -a python gui.py"
+        )
+        return
+
+    try:
+        root = tk.Tk()
+    except tk.TclError as error:
+        print(
+            "Unable to start the TaskTriage GUI because no usable display is available."
+        )
+        print(
+            "In Codespaces, install Xvfb and run: xvfb-run -a python gui.py"
+        )
+        print(f"Tkinter details: {error}")
+        return
+
+    app = TaskTriageGUI(root)
+    root.mainloop()
+
+
+if __name__ == "__main__":
+    main()
